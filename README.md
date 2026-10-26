@@ -1,4 +1,4 @@
-# 🎓 Student Marks Calculator
+# STUDENT MARKS CALCULATOR:
 
 A beginner-friendly web project that calculates a student's total marks, percentage, grade, and pass/fail status.
 
