@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Marks Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="badge">🎓 Student Toolkit</div>
+      <h1>Student Marks Calculator</h1>
+      <p>Enter your marks to calculate your total, percentage, and result.</p>
+    </header>
+
+    <form id="marksForm">
+      <label for="studentName">Student name</label>
+      <input id="studentName" type="text" placeholder="Enter your name" required maxlength="60">
+
+      <label for="subjectCount">Number of subjects</label>
+      <select id="subjectCount">
+        <option value="3">3 subjects</option>
+        <option value="4">4 subjects</option>
+        <option value="5" selected>5 subjects</option>
+        <option value="6">6 subjects</option>
+        <option value="7">7 subjects</option>
+        <option value="8">8 subjects</option>
+      </select>
+
+      <div id="subjects" class="subjects"></div>
+
+      <button type="submit">Calculate result</button>
+      <button type="button" id="resetBtn" class="secondary">Reset</button>
+    </form>
+
+    <section id="result" class="result" aria-live="polite" hidden>
+      <h2>Result summary</h2>
+      <p id="greeting" class="greeting"></p>
+      <div class="stats">
+        <div class="stat"><span>Total marks</span><strong id="total">—</strong></div>
+        <div class="stat"><span>Percentage</span><strong id="percentage">—</strong></div>
+        <div class="stat"><span>Grade</span><strong id="grade">—</strong></div>
+        <div class="stat"><span>Status</span><strong id="status">—</strong></div>
+      </div>
+      <p id="message" class="message"></p>
+      <button type="button" id="printBtn" class="secondary">Print result</button>
+    </section>
+
+    <footer>Made for learning • HTML, CSS & JavaScript</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
