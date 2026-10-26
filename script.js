@@ -1,96 +1,111 @@
-const subjectCount = document.getElementById("subjectCount");
-const subjectsContainer = document.getElementById("subjects");
-const marksForm = document.getElementById("marksForm");
-const resultSection = document.getElementById("result");
+const form = document.querySelector("#search-form");
+const cityInput = document.querySelector("#city-input");
+const message = document.querySelector("#message");
+const weatherCard = document.querySelector("#weather-card");
+const searchButton = form.querySelector("button");
 
-function renderSubjects() {
-  const count = Number(subjectCount.value);
-  subjectsContainer.innerHTML = "";
+const weatherDescriptions = {
+  0: ["Clear sky", "☀️"],
+  1: ["Mainly clear", "🌤️"],
+  2: ["Partly cloudy", "⛅"],
+  3: ["Overcast", "☁️"],
+  45: ["Fog", "🌫️"],
+  48: ["Depositing rime fog", "🌫️"],
+  51: ["Light drizzle", "🌦️"],
+  53: ["Moderate drizzle", "🌦️"],
+  55: ["Dense drizzle", "🌧️"],
+  56: ["Light freezing drizzle", "🌧️"],
+  57: ["Dense freezing drizzle", "🌧️"],
+  61: ["Slight rain", "🌦️"],
+  63: ["Moderate rain", "🌧️"],
+  65: ["Heavy rain", "🌧️"],
+  66: ["Light freezing rain", "🌧️"],
+  67: ["Heavy freezing rain", "🌧️"],
+  71: ["Slight snow", "🌨️"],
+  73: ["Moderate snow", "🌨️"],
+  75: ["Heavy snow", "❄️"],
+  77: ["Snow grains", "🌨️"],
+  80: ["Slight rain showers", "🌦️"],
+  81: ["Moderate rain showers", "🌧️"],
+  82: ["Violent rain showers", "⛈️"],
+  85: ["Slight snow showers", "🌨️"],
+  86: ["Heavy snow showers", "❄️"],
+  95: ["Thunderstorm", "⛈️"],
+  96: ["Thunderstorm with hail", "⛈️"],
+  99: ["Thunderstorm with heavy hail", "⛈️"]
+};
 
-  for (let i = 1; i <= count; i++) {
-    const field = document.createElement("div");
-    field.className = "subject-field";
-
-    const label = document.createElement("label");
-    label.htmlFor = `subject${i}`;
-    label.textContent = `Subject ${i} (out of 100)`;
-
-    const input = document.createElement("input");
-    input.id = `subject${i}`;
-    input.name = `subject${i}`;
-    input.type = "number";
-    input.min = "0";
-    input.max = "100";
-    input.step = "0.5";
-    input.placeholder = "0–100";
-    input.required = true;
-
-    field.append(label, input);
-    subjectsContainer.appendChild(field);
-  }
-
-  resultSection.hidden = true;
+function showMessage(text, isError = false) {
+  message.textContent = text;
+  message.style.color = isError ? "#ffb4b4" : "#c3d2e6";
 }
 
-subjectCount.addEventListener("change", renderSubjects);
+async function getWeather(city) {
+  const geocodingUrl = new URL("https://geocoding-api.open-meteo.com/v1/search");
+  geocodingUrl.search = new URLSearchParams({
+    name: city,
+    count: "1",
+    language: "en",
+    format: "json"
+  });
 
-marksForm.addEventListener("submit", (event) => {
+  const geoResponse = await fetch(geocodingUrl);
+  if (!geoResponse.ok) throw new Error("Could not search for that city. Please try again.");
+  const geoData = await geoResponse.json();
+  if (!geoData.results || geoData.results.length === 0) {
+    throw new Error("City not found. Check the spelling and try again.");
+  }
+
+  const place = geoData.results[0];
+  const weatherUrl = new URL("https://api.open-meteo.com/v1/forecast");
+  weatherUrl.search = new URLSearchParams({
+    latitude: place.latitude,
+    longitude: place.longitude,
+    current: "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m",
+    temperature_unit: "celsius",
+    wind_speed_unit: "kmh",
+    timezone: "auto"
+  });
+
+  const weatherResponse = await fetch(weatherUrl);
+  if (!weatherResponse.ok) throw new Error("Weather data is temporarily unavailable.");
+  const weatherData = await weatherResponse.json();
+  return { place, current: weatherData.current };
+}
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
-
-  const name = document.getElementById("studentName").value.trim();
-  const inputs = [...subjectsContainer.querySelectorAll("input")];
-  const marks = inputs.map((input) => Number(input.value));
-
-  if (!name) {
-    alert("Please enter the student's name.");
+  const city = cityInput.value.trim();
+  if (!city) {
+    showMessage("Please enter a city name.", true);
     return;
   }
 
-  if (marks.some((mark, index) =>
-    inputs[index].value.trim() === "" || !Number.isFinite(mark) || mark < 0 || mark > 100
-  )) {
-    alert("Enter a mark from 0 to 100 for every subject.");
-    return;
+  searchButton.disabled = true;
+  searchButton.textContent = "Loading...";
+  showMessage("Getting the latest weather...");
+  weatherCard.classList.add("hidden");
+
+  try {
+    const { place, current } = await getWeather(city);
+    const [description, icon] = weatherDescriptions[current.weather_code] || ["Weather conditions", "🌡️"];
+    const placeName = [place.name, place.admin1, place.country].filter(Boolean)
+      .filter((value, index, array) => array.indexOf(value) === index)
+      .join(", ");
+
+    document.querySelector("#location").textContent = placeName;
+    document.querySelector("#description").textContent = description;
+    document.querySelector("#weather-icon").textContent = icon;
+    document.querySelector("#temperature").textContent = Math.round(current.temperature_2m);
+    document.querySelector("#feels-like").textContent = Math.round(current.apparent_temperature);
+    document.querySelector("#humidity").textContent = current.relative_humidity_2m;
+    document.querySelector("#wind").textContent = Math.round(current.wind_speed_10m);
+    weatherCard.classList.remove("hidden");
+    showMessage(`Weather updated for ${place.name}.`);
+  } catch (error) {
+    showMessage(error.message || "Something went wrong. Please try again.", true);
+  } finally {
+    searchButton.disabled = false;
+    searchButton.textContent = "Search";
   }
-
-  const total = marks.reduce((sum, mark) => sum + mark, 0);
-  const maximum = marks.length * 100;
-  const percentage = (total / maximum) * 100;
-  const passed = marks.every((mark) => mark >= 35);
-
-  let grade;
-  if (!passed) grade = "F";
-  else if (percentage >= 90) grade = "A+";
-  else if (percentage >= 80) grade = "A";
-  else if (percentage >= 70) grade = "B";
-  else if (percentage >= 60) grade = "C";
-  else if (percentage >= 50) grade = "D";
-  else grade = "E";
-
-  document.getElementById("greeting").textContent = `Well done, ${name} — here is your result.`;
-  document.getElementById("total").textContent = `${formatNumber(total)} / ${maximum}`;
-  document.getElementById("percentage").textContent = `${percentage.toFixed(2)}%`;
-  document.getElementById("grade").textContent = grade;
-  document.getElementById("status").textContent = passed ? "Pass" : "Fail";
-  document.getElementById("message").textContent = passed
-    ? "You passed all subjects. Keep learning and improving! 🌟"
-    : "You need at least 35 marks in every subject to pass. Review the subjects below 35 and keep practising.";
-
-  resultSection.hidden = false;
-  resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
 });
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-  marksForm.reset();
-  subjectCount.value = "5";
-  renderSubjects();
-  document.getElementById("studentName").focus();
-});
-
-document.getElementById("printBtn").addEventListener("click", () => window.print());
-
-function formatNumber(number) {
-  return Number.isInteger(number) ? String(number) : number.toFixed(1);
-}
-
-renderSubjects();

@@ -1,53 +1,51 @@
-# STUDENT MARKS CALCULATOR:
+# Weather Report App
 
-A beginner-friendly web project that calculates a student's total marks, percentage, grade, and pass/fail status.
+A beginner-friendly weather report website built with **HTML, CSS, and JavaScript**. Search for a city to view current temperature, feels-like temperature, humidity, wind speed, and a weather icon.
 
-## Features
-- Enter a student name.
-- Choose between 3 and 8 subjects.
-- Enter marks out of 100 for each subject.
-- Calculate total marks and percentage.
-- Display a grade and pass/fail result.
-- Validate marks from 0 to 100.
-- Print the result summary.
-- Responsive layout for mobile and desktop.
+## Project files
 
-## Technologies
-- HTML
-- CSS
-- JavaScript
+- `index.html` — page structure
+- `style.css` — design and responsive layout
+- `script.js` — city search and weather API logic
 
 ## How to run
-1. Download or clone this repository.
-2. Open `index.html` in a web browser.
-3. Enter the student's name and marks.
-4. Select **Calculate result**.
 
-No installation or server is required.
+1. Download and extract the ZIP file.
+2. Open the `weather_report_project` folder.
+3. Double-click `index.html` to open it in a modern browser.
+4. Enter a city name, such as `Hyderabad`, `London`, or `Delhi`, and press **Search**.
+5. Keep an internet connection on because the app retrieves live weather data.
 
-## Grading rules used
-A student must score at least 35 in every subject to pass.
+## API used
 
-| Percentage | Grade |
-|---|---|
-| 90–100% | A+ |
-| 80–89.99% | A |
-| 70–79.99% | B |
-| 60–69.99% | C |
-| 50–59.99% | D |
-| Below 50% (all subjects passed) | E |
-| Any subject below 35 | F / Fail |
+This project uses the free Open-Meteo APIs:
+- Geocoding: `https://geocoding-api.open-meteo.com/v1/search`
+- Current weather: `https://api.open-meteo.com/v1/forecast`
 
-These are sample rules for this project. Change them in `script.js` if your college uses a different grading scheme.
+No API key is needed for this demo.
 
-## Project structure
-```text
-student-marks-calculator/
-├── index.html
-├── style.css
-├── script.js
-└── README.md
+## Upload to GitHub
+
+1. Sign in to GitHub and create a new repository named `weather-report-app`.
+2. Choose **Public** or **Private**, then create the repository.
+3. Select **Add file → Upload files**.
+4. Upload `index.html`, `style.css`, `script.js`, and `README.md`.
+5. Enter a commit message such as `Add weather report app` and click **Commit changes**.
+
+### Optional: run with Git
+
+If Git is installed, open a terminal inside this folder and run:
+
+```bash
+git init
+git add .
+git commit -m "Add weather report app"
 ```
 
-## GitHub Pages
-To publish the project, open your repository on GitHub, go to **Settings → Pages**, select **Deploy from a branch**, choose the `main` branch and `/ (root)` folder, then save. Wait for GitHub Pages to publish the site.
+Create an empty repository on GitHub, then follow GitHub's instructions to connect it as a remote and push the files.
+
+## Troubleshooting
+
+- If a city is not found, check its spelling.
+- If weather does not load, check your internet connection and try again.
+- This is a simple student project, not an emergency or official weather-alert service.

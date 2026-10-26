@@ -3,51 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Marks Calculator</title>
+  <title>Weather Report App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
     <header>
-      <div class="badge">🎓 Student Toolkit</div>
-      <h1>Student Marks Calculator</h1>
-      <p>Enter your marks to calculate your total, percentage, and result.</p>
+      <p class="eyebrow">WEATHER REPORT</p>
+      <h1>How's the weather?</h1>
+      <p class="subtitle">Check current weather for any city.</p>
     </header>
 
-    <form id="marksForm">
-      <label for="studentName">Student name</label>
-      <input id="studentName" type="text" placeholder="Enter your name" required maxlength="60">
-
-      <label for="subjectCount">Number of subjects</label>
-      <select id="subjectCount">
-        <option value="3">3 subjects</option>
-        <option value="4">4 subjects</option>
-        <option value="5" selected>5 subjects</option>
-        <option value="6">6 subjects</option>
-        <option value="7">7 subjects</option>
-        <option value="8">8 subjects</option>
-      </select>
-
-      <div id="subjects" class="subjects"></div>
-
-      <button type="submit">Calculate result</button>
-      <button type="button" id="resetBtn" class="secondary">Reset</button>
+    <form id="search-form" class="search">
+      <label class="sr-only" for="city-input">City name</label>
+      <input id="city-input" type="text" placeholder="Enter city (e.g. Hyderabad)" autocomplete="off" required>
+      <button type="submit">Search</button>
     </form>
 
-    <section id="result" class="result" aria-live="polite" hidden>
-      <h2>Result summary</h2>
-      <p id="greeting" class="greeting"></p>
-      <div class="stats">
-        <div class="stat"><span>Total marks</span><strong id="total">—</strong></div>
-        <div class="stat"><span>Percentage</span><strong id="percentage">—</strong></div>
-        <div class="stat"><span>Grade</span><strong id="grade">—</strong></div>
-        <div class="stat"><span>Status</span><strong id="status">—</strong></div>
+    <p id="message" class="message" role="status">Try searching for a city to get started.</p>
+
+    <section id="weather-card" class="weather-card hidden" aria-live="polite">
+      <div class="weather-top">
+        <div>
+          <p id="location" class="location">City, Country</p>
+          <p id="description" class="description">Weather description</p>
+        </div>
+        <div id="weather-icon" class="weather-icon" aria-hidden="true">☀️</div>
       </div>
-      <p id="message" class="message"></p>
-      <button type="button" id="printBtn" class="secondary">Print result</button>
+      <div class="temperature"><span id="temperature">--</span><span class="degree">°C</span></div>
+      <div class="details">
+        <div class="detail"><span class="detail-label">Feels like</span><strong><span id="feels-like">--</span>°C</strong></div>
+        <div class="detail"><span class="detail-label">Humidity</span><strong><span id="humidity">--</span>%</strong></div>
+        <div class="detail"><span class="detail-label">Wind speed</span><strong><span id="wind">--</span> km/h</strong></div>
+      </div>
     </section>
 
-    <footer>Made for learning • HTML, CSS & JavaScript</footer>
+    <footer>
+      <p>Built with HTML, CSS &amp; JavaScript</p>
+      <p class="note">Weather data provided by Open-Meteo. No API key required.</p>
+    </footer>
   </main>
   <script src="script.js"></script>
 </body>
